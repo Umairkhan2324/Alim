@@ -1,13 +1,9 @@
 # agents/commerce/tools.py
 from agents import FunctionTool
-from .commerce_agent import create_commerce_agent
-
-# Instantiate the Commerce agent
-commerce_agent = create_commerce_agent()
+from .commerce_agent import agent
 
 # Wrap the agent as a FunctionTool for the Orchestrator to call
-commerce_tool = FunctionTool.from_agent(
-    commerce_agent,
-    name="commerce_tool",
-    description="Research and summarize commerce topics (trade, retail, e-commerce, market data), providing sources and citations."
+commerce_tool = agent.as_tool(
+    tool_name="commerce_tool",
+    tool_description="Analyzes commerce, trade, and business trends, providing data-driven insights."
 )

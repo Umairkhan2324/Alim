@@ -1,28 +1,29 @@
-from agents import Agent, ChatOpenAI, ModelSettings, WebSearchTool
+from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, WebSearchTool
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+import os
+load_dotenv()
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM_PROMPT = '''
-You are the Governance Research Agent. Your expertise is in public policy, regulation, and governance frameworks.
+
+GOVERNANCE_PROMPT = '''
+You are the Governance Research Agent. Your expertise is in public administration, policy analysis, and regulatory frameworks.
 
 When invoked, autonomously plan a multi-step research approach using tools:
-1. Identify key governance and regulatory terms.
-2. Use WebSearch to retrieve policy papers, government reports, and analyses.
-3. Summarize important policy insights with citations.
-4. Provide a concise governance overview for the query.
+1. Identify key governance models and policy areas.
+2. Use WebSearch to retrieve government publications, academic studies, and policy briefs.
+3. Summarize key governance principles and practices with citations.
+4. Provide a concise governance analysis for the query.
 '''
 
-def create_governance_agent():
-    llm = ChatOpenAI(
-        model="gpt-4o"
-    )
-    tools = [WebSearchTool()]
-    agent = Agent(
+tools = [WebSearchTool()]
+agent = Agent(
         name="GovernanceAgent",
-        system_prompt=SYSTEM_PROMPT,
-        model=llm,
-        tools=tools,
-        settings=ModelSettings(
-            temperature=0.0,
-            parallel_tool_calls=False
-        )
-    )
-    return agent
+        instructions=GOVERNANCE_PROMPT,
+        model=OpenAIChatCompletionsModel(
+        model="gpt-4o",
+        openai_client=client
+    ),
+        tools=tools
+)

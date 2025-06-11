@@ -1,6 +1,12 @@
-from agents import Agent, ChatOpenAI, ModelSettings, WebSearchTool
+from agents import Agent, ModelSettings,OpenAIChatCompletionsModel, WebSearchTool
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+import os
+load_dotenv()
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM_PROMPT = '''
+TECH_PROMPT = '''
 You are the Technology Research Agent. Your expertise is in emerging technologies, industry trends, and technical analysis.
 
 When invoked, autonomously plan a multi-step research approach using tools:
@@ -10,19 +16,16 @@ When invoked, autonomously plan a multi-step research approach using tools:
 4. Provide a concise technology overview for the query.
 '''
 
-def create_technology_agent():
-    llm = ChatOpenAI(
-        model="gpt-4o"
-    )
-    tools = [WebSearchTool()]
-    agent = Agent(
-        name="TechnologyAgent",
-        system_prompt=SYSTEM_PROMPT,
-        model=llm,
-        tools=tools,
-        settings=ModelSettings(
-            temperature=0.0,
-            parallel_tool_calls=False
-        )
-    )
-    return agent
+
+tools = [WebSearchTool()]
+agent = Agent(
+    name="TechnologyAgent",
+    instructions=TECH_PROMPT,
+    model=OpenAIChatCompletionsModel(
+    model="gpt-4o",
+    openai_client=client
+    ),
+    tools=tools
+)
+
+# return agent

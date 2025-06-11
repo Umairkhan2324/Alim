@@ -1,9 +1,8 @@
 from agents import FunctionTool
-from .tech_agent import create_technology_agent
+from .tech_agent import agent
 
-technology_agent = create_technology_agent()
-technology_tool = FunctionTool.from_agent(
-    technology_agent,
-    name="technology_tool",
-    description="Research and summarize technology topics, providing sources and citations."
+
+technology_tool = agent.as_tool(
+    tool_name="technology_tool",
+    tool_description="Explains emerging technologies, software development, and AI advancements."
 )

@@ -1,9 +1,7 @@
 from agents import FunctionTool
-from .he_agent import create_he_agent
+from .he_agent import agent
 
-he_agent = create_he_agent()
-he_tool = FunctionTool.from_agent(
-    he_agent,
-    name="higher_education_tool",
-    description="Research and summarize higher education topics, providing sources and citations."
+higher_education_tool = agent.as_tool(
+    tool_name="higher_education_tool",
+    tool_description="Covers trends in higher education, university policies, and academic research."
 )

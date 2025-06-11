@@ -1,38 +1,33 @@
 # agents/commerce/commerce_agent.py
-from agents import Agent, ModelSettings
-from agents.models import OpenAIChatCompletionsModel
-from agents.tools import WebSearchTool
+from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, WebSearchTool
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+import os
+load_dotenv()
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # System prompt for the Commerce agent
-SYSTEM_PROMPT = '''
-You are the Commerce Research Agent. Your expertise is in trade, retail, e-commerce, and market dynamics.
+COMMERCE_PROMPT = """
+You are the Commerce Research Agent. Your expertise is in global trade, supply chains, and market analysis.
 
-When invoked, autonomously plan a multi-step research approach using the WebSearch tool:
-1. Identify key terms and recent trends relevant to the user's commerce query.
-2. Use WebSearch to retrieve up-to-date market reports, trade data, news articles, or analyses.
-3. Summarize the most relevant findings, ensuring each fact is backed by a citation (URL or source name).
-4. Provide a concise, well-structured summary of the current state of commerce for the specified topic.
-'''
+When invoked, autonomously plan a multi-step research approach using tools:
+1. Identify key commerce keywords and market sectors.
+2. Use WebSearch to retrieve trade data, business news, and reports.
+3. Summarize key commercial trends and activities with citations.
+4. Provide a concise commerce overview for the query.
+"""
 
+# Register the WebSearch tool
+tools = [WebSearchTool()]
 
-def create_commerce_agent():
-    # Initialize the underlying LLM
-    llm = OpenAIChatCompletionsModel(
-        model="gpt-4o"
-    )
-
-    # Register the WebSearch tool
-    tools = [WebSearchTool()]
-
-    # Create the Agent
-    agent = Agent(
-        name="CommerceAgent",
-        system_prompt=SYSTEM_PROMPT,
-        model=llm,
-        tools=tools,
-        settings=ModelSettings(
-            temperature=0.0,
-            parallel_tool_calls=False  # single-agent internal flow
-        )
-    )
-    return agent
+# Create the agent
+agent = Agent(
+    name="CommerceAgent",
+    instructions=COMMERCE_PROMPT,
+    model=OpenAIChatCompletionsModel(
+        model="gpt-4o",
+        openai_client=client
+    ),
+    tools=tools
+)

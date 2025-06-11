@@ -1,28 +1,24 @@
-from agents import Agent, ChatOpenAI, ModelSettings, WebSearchTool
+from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, WebSearchTool
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+import os
+load_dotenv()
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM_PROMPT = '''
-You are the Entrepreneurship Research Agent. Your expertise is in startups, business models, and market entry strategies.
-
-When invoked, autonomously plan a multi-step research approach using tools:
-1. Identify key startup and entrepreneurship terms.
-2. Use WebSearch to retrieve case studies, market analyses, and startup data.
-3. Summarize critical findings with citations.
-4. Provide a concise entrepreneurship overview for the topic.
+ENTREPRENEURSHIP_PROMPT = '''
+You are the Entrepreneurship Research Agent. Your expertise is in startups, venture capital, and innovation ecosystems.
+You will use the WebSearch tool to find case studies, funding data, and market analysis.
+Your final output will be a concise and informative summary that addresses the user's query, presented in markdown format.
 '''
 
-def create_entrepreneurship_agent():
-    llm = ChatOpenAI(
-        model="gpt-4o"
-    )
-    tools = [WebSearchTool()]
-    agent = Agent(
-        name="EntrepreneurshipAgent",
-        system_prompt=SYSTEM_PROMPT,
-        model=llm,
-        tools=tools,
-        settings=ModelSettings(
-            temperature=0.0,
-            parallel_tool_calls=False
-        )
-    )
-    return agent
+tools = [WebSearchTool()]
+agent = Agent(
+    name="EntrepreneurshipAgent",
+    instructions=ENTREPRENEURSHIP_PROMPT,
+    model=OpenAIChatCompletionsModel(
+        model="gpt-4o",
+        openai_client=client
+    ),
+    tools=tools
+)

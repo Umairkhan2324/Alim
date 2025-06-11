@@ -1,9 +1,7 @@
 from agents import FunctionTool
-from .fa_agent import create_fa_agent
+from .fa_agent import agent
 
-fa_agent = create_fa_agent()
-fa_tool = FunctionTool.from_agent(
-    fa_agent,
-    name="fa_tool",
-    description="Research and summarize foreign affairs topics, providing sources and citations."
+fa_tool = agent.as_tool(
+    tool_name="fa_tool",
+    tool_description="Provides analysis on foreign policy, international relations, and diplomatic strategies."
 )

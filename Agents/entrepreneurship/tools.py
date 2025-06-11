@@ -1,9 +1,8 @@
 from agents import FunctionTool
-from .ent_agent import create_entrepreneurship_agent
+from .ent_agent import agent
 
-ent_agent = create_entrepreneurship_agent()
-ent_tool = FunctionTool.from_agent(
-    ent_agent,
-    name="entrepreneurship_tool",
-    description="Research and summarize entrepreneurship topics, providing sources and citations."
+
+entrepreneurship_tool = agent.as_tool(
+    tool_name="entrepreneurship_tool",
+    tool_description="Provides guidance on starting and growing a business, from ideation to execution."
 )

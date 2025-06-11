@@ -12,7 +12,5 @@ def render_chat(message):
     else:
         st.markdown(f"**Assistant:** {message['content']}")
 
-import streamlit as st
-
 def show_progress(message: str):
     st.info(message)

@@ -1,28 +1,29 @@
-from agents import Agent, ChatOpenAI, ModelSettings, WebSearchTool
+from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, WebSearchTool
+from dotenv import load_dotenv
+from openai import AsyncOpenAI
+import os
+load_dotenv()
+OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
+client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM_PROMPT = '''
-You are the Innovation Research Agent. Your expertise is in R&D, patents, and emerging innovation trends.
+INNOVATION_PROMPT = '''
+You are the Innovation Research Agent. Your expertise is in technology adoption, disruptive trends, and R&D strategies.
 
 When invoked, autonomously plan a multi-step research approach using tools:
-1. Identify key innovation and patent terms.
-2. Use WebSearch to retrieve patent databases, R&D reports, and innovation indices.
-3. Summarize major innovation findings with citations.
-4. Provide a concise innovation overview for the query.
+1. Identify key innovation concepts and technology areas.
+2. Use WebSearch to retrieve patent filings, research papers, and market analyses.
+3. Summarize key innovative breakthroughs and their impact with citations.
+4. Provide a concise innovation report for the query.
 '''
 
-def create_innovation_agent():
-    llm = ChatOpenAI(
-        model="gpt-4o"
-    )
-    tools = [WebSearchTool()]
-    agent = Agent(
-        name="InnovationAgent",
-        system_prompt=SYSTEM_PROMPT,
-        model=llm,
-        tools=tools,
-        settings=ModelSettings(
-            temperature=0.0,
-            parallel_tool_calls=False
-        )
-    )
-    return agent
+
+tools = [WebSearchTool()]
+agent = Agent(
+    name="InnovationAgent",
+    instructions=INNOVATION_PROMPT,
+    model=OpenAIChatCompletionsModel(
+        model="gpt-4o",
+        openai_client=client
+    ),
+    tools=tools
+)

@@ -1,9 +1,8 @@
 from agents import FunctionTool
-from .economics_agent import create_economics_agent
+from .economics_agent import agent
 
-economics_agent = create_economics_agent()
-economics_tool = FunctionTool.from_agent(
-    economics_agent,
-    name="economics_tool",
-    description="Research and summarize economic topics, providing sources and citations."
+# Wrap the agent as a FunctionTool for the Orchestrator to call
+economics_tool = agent.as_tool(
+    tool_name="economics_tool",
+    tool_description="Explains complex economic concepts and provides economic forecasts and analysis."
 )

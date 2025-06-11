@@ -1,9 +1,7 @@
 from agents import FunctionTool
-from .ir_agent import create_ir_agent
+from .ir_agent import agent
 
-ir_agent = create_ir_agent()
-ir_tool = FunctionTool.from_agent(
-    ir_agent,
-    name="ir_tool",
-    description="Research and summarize international relations topics, providing sources and citations."
+ir_tool = agent.as_tool(
+    tool_name="ir_tool",
+    tool_description="Analyzes international relations, global security, and geopolitical dynamics."
 )

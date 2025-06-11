@@ -1,52 +1,46 @@
 # main.py
 import streamlit as st
-from components.ui import get_user_query, get_user_input, render_chat
-from components.progress import show_progress
-from components.report_view import display_report
-from Agents.orchestrator.orchestrator_agent import create_orchestrator_agent, run_orchestrator
+import sys
+import os
 
+# Add project root to sys.path to resolve module not found errors
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-def main():
-    st.set_page_config(page_title="Multi-Agent Research Assistant", layout="wide")
-    st.title("Multi-Agent Research Assistant")
+from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
+from components.chat_input import chat_input_box
 
-    # Initialize session state
-    if "messages" not in st.session_state:
-        st.session_state["messages"] = []
-        st.session_state["report"] = None
+# --- Streamlit Page Setup ---
+st.set_page_config(
+    page_title="Alim - Your Research Assistant",
+    page_icon="📚",
+    layout="centered",
+    initial_sidebar_state="auto",
+)
 
-    # Step 1: Get initial query
-    if not st.session_state["messages"]:
-        query = ui.get_user_query()
-        if query:
-            st.session_state["messages"].append({"role": "user", "content": query})
+st.title("Alim - Your Research Assistant 📚")
+st.caption("Alim is a research assistant powered by multiple AI agents.")
 
-    # Display conversation history
-    for msg in st.session_state["messages"]:
-        ui.render_chat(msg)
+# --- Session State Initialization ---
+if "messages" not in st.session_state:
+    st.session_state.messages = []
 
-    # Create orchestrator
-    orchestrator = create_orchestrator_agent()
+# --- Chat Interface ---
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
 
-    # Step 2: Clarification or research
-    if st.session_state["messages"] and st.session_state["report"] is None:
-        last = st.session_state["messages"][-1]
-        # If assistant asked a question, get follow-up answer
-        if last["role"] == "assistant" and last["content"].strip().endswith('?'):
-            followup = ui.get_user_input()
-            if followup:
-                st.session_state["messages"].append({"role": "user", "content": followup})
-        else:
-            # Proceed to research
-            with st.spinner("Research in progress..."):
-                result = run_orchestrator(orchestrator, st.session_state["messages"])  # pass full history
-                st.session_state["report"] = result
-            progress.show_progress("Research completed!")
+if prompt := chat_input_box():
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
 
-    # Step 3: Display final report
-    if st.session_state["report"]:
-        report_view.display_report(st.session_state["report"])
-
-
-if __name__ == '__main__':
-    main()
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        with st.spinner("Alim is thinking..."):
+            # Pass the entire conversation history to the orchestrator
+            full_response = run_orchestrator_sync(orchestrator, st.session_state.messages)
+            message_placeholder.markdown(full_response)
+    
+    st.session_state.messages.append({"role": "assistant", "content": full_response})
