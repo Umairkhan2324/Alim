@@ -2,6 +2,9 @@
 import streamlit as st
 import sys
 import os
+import nest_asyncio
+
+nest_asyncio.apply()
 
 # Add project root to sys.path to resolve module not found errors
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

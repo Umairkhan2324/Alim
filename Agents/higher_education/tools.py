@@ -1,4 +1,3 @@
-from agents import FunctionTool
 from .he_agent import agent
 
 higher_education_tool = agent.as_tool(

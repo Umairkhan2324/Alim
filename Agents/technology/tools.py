@@ -1,6 +1,4 @@
-from agents import FunctionTool
 from .tech_agent import agent
-
 
 technology_tool = agent.as_tool(
     tool_name="technology_tool",

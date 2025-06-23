@@ -1,4 +1,3 @@
-from agents import FunctionTool
 from .fa_agent import agent
 
 fa_tool = agent.as_tool(

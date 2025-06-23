@@ -1,5 +1,4 @@
 # agents/commerce/tools.py
-from agents import FunctionTool
 from .commerce_agent import agent
 
 # Wrap the agent as a FunctionTool for the Orchestrator to call

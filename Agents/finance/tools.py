@@ -1,4 +1,3 @@
-from agents import FunctionTool
 from .finance_agent import agent
 
 finance_tool = agent.as_tool(

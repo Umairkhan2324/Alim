@@ -1,30 +1,36 @@
-from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, WebSearchTool
+from agents import Agent, OpenAIChatCompletionsModel, WebSearchTool
 from dotenv import load_dotenv
-from openai import AsyncOpenAI
+from openai import AsyncOpenAI  
 import os
+from schemas import SpecialistOutput
 load_dotenv()
-OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 FA_PROMPT = '''
 You are the Foreign Affairs Research Agent. Your expertise is in international diplomacy, geopolitical analysis, and foreign policy.
 
-When invoked, autonomously plan a multi-step research approach using tools:
-1. Identify key countries, regions, and geopolitical issues.
-2. Use WebSearch to retrieve government reports, think tank analyses, and news.
-3. Summarize major foreign policy developments and events with citations.
-4. Provide a concise geopolitical overview for the query.
+When invoked, autonomously use the WebSearch tool to find government reports, think tank analyses, and news.
+
+Your final output MUST be a JSON object that conforms to the `SpecialistOutput` schema:
+{{
+  "content": "A concise geopolitical overview, written in markdown.",
+  "sources": [
+    "http://example.com/source1",
+    "http://example.com/source2"
+  ]
+}}
 '''
 
 
 tools = [WebSearchTool()]
-agent = Agent(
+agent = Agent(  
     name="ForeignAffairsAgent",
     instructions=FA_PROMPT,
     model=OpenAIChatCompletionsModel(
         model="gpt-4o",
         openai_client=client
     ),
-    tools=tools
+    tools=tools,
+    output_type=SpecialistOutput
 )

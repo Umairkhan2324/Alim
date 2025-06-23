@@ -1,6 +1,4 @@
-from agents import FunctionTool
 from .innovation_agent import agent
-
 
 innovation_tool = agent.as_tool(
     tool_name="innovation_tool",

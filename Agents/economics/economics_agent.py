@@ -1,19 +1,24 @@
-from agents import Agent, ModelSettings, OpenAIChatCompletionsModel, WebSearchTool
+from agents import Agent, OpenAIChatCompletionsModel, WebSearchTool
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 import os
+from schemas import SpecialistOutput
 load_dotenv()
-OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY")
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 ECONOMICS_PROMPT = '''
 You are the Economics Research Agent. Your expertise is in macroeconomic indicators, financial markets, and economic policy.
 
-When invoked, autonomously plan a multi-step research approach using tools:
-1. Identify key economic terms and indicators.
-2. Use WebSearch to retrieve economic reports, academic papers, and data.
-3. Summarize major economic theories and findings with citations.
-4. Provide a concise economic analysis for the query.
+When invoked, autonomously plan a multi-step research approach using the WebSearch tool to find relevant information.
+
+Your final output MUST be a JSON object that conforms to the `SpecialistOutput` schema:
+{{
+  "content": "A concise economic analysis, written in markdown.",
+  "sources": [
+    "http://example.com/source1",
+    "http://example.com/source2"
+  ]
+}}
 '''
 
 tools = [WebSearchTool()]
@@ -24,5 +29,6 @@ agent = Agent(
         model="gpt-4o",
         openai_client=client
     ),
-    tools=tools
+    tools=tools,
+    output_type=SpecialistOutput
 )
