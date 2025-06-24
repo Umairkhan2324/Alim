@@ -2,8 +2,16 @@
 import streamlit as st
 import nest_asyncio
 import json
+import os
+import sys
 
-# Import the orchestrator from the root directory
+# Explicitly add the project root to sys.path for Streamlit Cloud deployment
+# This ensures that modules like 'Agents' and 'schemas' are discoverable.
+project_root = os.path.abspath(os.path.dirname(__file__))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+# Import the orchestrator
 from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
 from schemas.agent_schema import ResearchReport
 
