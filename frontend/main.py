@@ -1,49 +1,51 @@
 # main.py
-import streamlit as st
-import sys
 import os
+import sys
+import json
 import nest_asyncio
+import streamlit as st
 
-nest_asyncio.apply()
-
-# Add project root to sys.path to resolve module not found errors
+# Setup project root path before any local imports
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
 from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
-from components.chat_input import chat_input_box
+from schemas import ResearchReport
+from utils.logging_config import get_logger
+from frontend.components.sidebar import setup_sidebar
+from frontend.components.chat import display_messages
+
+nest_asyncio.apply()
+logger = get_logger(__name__)
 
 # --- Streamlit Page Setup ---
-st.set_page_config(
-    page_title="Alim - Your Research Assistant",
-    page_icon="📚",
-    layout="centered",
-    initial_sidebar_state="auto",
-)
-
-st.title("Alim - Your Research Assistant 📚")
-st.caption("Alim is a research assistant powered by multiple AI agents.")
+st.set_page_config(page_title="Alim - Research Assistant", layout="wide", page_icon="📚")
+st.title("Alim")
+setup_sidebar()
 
 # --- Session State Initialization ---
 if "messages" not in st.session_state:
-    st.session_state.messages = []
+    st.session_state.messages = [{"role": "assistant", "content": "How can I help your research today?"}]
 
-# --- Chat Interface ---
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+# --- Main Chat Interface ---
+display_messages()
 
-if prompt := chat_input_box():
+if prompt := st.chat_input("What would you like to research?"):
+    logger.info(f"User entered prompt: {prompt}")
     st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    st.rerun()
 
+# --- Process and Display Assistant Response ---
+if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
+    user_prompt = st.session_state.messages[-1]["content"]
     with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        with st.spinner("Alim is thinking..."):
-            # Pass the entire conversation history to the orchestrator
-            full_response = run_orchestrator_sync(orchestrator, st.session_state.messages)
-            message_placeholder.markdown(full_response)
-    
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
+        with st.spinner("Thinking..."):
+            response = run_orchestrator_sync(orchestrator, user_prompt)
+            try:
+                report_data = json.loads(response)
+                report = ResearchReport(**report_data)
+                st.session_state.messages.append({"role": "assistant", "report": report})
+            except (json.JSONDecodeError, TypeError):
+                st.session_state.messages.append({"role": "assistant", "content": response})
+            st.rerun()

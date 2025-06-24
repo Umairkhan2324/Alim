@@ -1,0 +1,56 @@
+2025-06-24 11:29:25,660 - __main__ - INFO - User entered prompt: fetch me out the financial burnout of iran israel war during revent clashes
+2025-06-24 11:29:25,782 - Agents.orchestrator.orchestrator_agent - INFO - Orchestrator (sync) received user input: fetch me out the financial burnout of iran israel war during revent clashes
+2025-06-24 11:29:35,310 - schemas.agent_schema - INFO - Performing Tavily search for query: 'financial impact of recent Iran-Israel clashes 2023' with depth 'advanced'
+2025-06-24 11:29:42,384 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:29:57,777 - Agents.orchestrator.orchestrator_agent - INFO - Orchestrator (sync) produced final output: The recent clashes between Iran and Israel have had notable financial impacts. Here's a detailed overview:
+
+1. **Rising Defense Expenditures**: Israel's defense budget has seen a significant increase. It was projected to reach 99 billion shekels ($28bn) in 2024, potentially rising to 118 billion shekels ($34bn) in 2025. Current conflict costs threaten to exceed these estimates depending on the duration and intensity of continued hostilities. [Source: Al Jazeera](https://www.aljazeera.com/news/2025/6/19/can-the-israeli-and-iranian-economies-sustain-a-war)
+
+2. **Economic Strain on Iran**: Iran is grappling with severe infrastructure challenges due to the conflict, worsened by existing U.S. sanctions. Rebuilding efforts for essential infrastructure, particularly in energy, could cost billions, exacerbating Iran’s economic challenges. [Source: Responsible Statecraft](https://responsiblestatecraft.org/us-strikes-iran-oil/)
+
+3. **Volatility in Oil Prices**: The conflict has caused fluctuations in oil prices, with potential implications for global inflation. However, the impact on oil prices has been less dramatic compared to past conflicts, such as the 2022 Ukraine crisis. [Source: ITR Economics](https://blog.itreconomics.com/blog/israel-iran-conflict-what-it-means-for-oil-prices)
+
+4. **Market Reactions**: Initial fears of a wider conflict led to market volatility, with short-term fluctuations being generally normal for geopolitical tensions. More recent updates indicate some stabilization in the markets, though the threat of escalation remains a concern for investors. [Source: Fisher Investments](https://www.fisherinvestments.com/en-us/insights/market-commentary/a-market-perspective-on-israel-and-irans-latest-conflict)
+
+In summary, while financial management has been relatively effective in the short term, both regional and international markets continue to monitor the situation closely as prolonged tensions could lead to more extensive economic consequences.
+2025-06-24 11:33:44,978 - __main__ - INFO - User entered prompt: fetch me out the financial burnout of iran israel war during recent clashes
+2025-06-24 11:33:45,109 - Agents.orchestrator.orchestrator_agent - INFO - Orchestrator (sync) received user input: fetch me out the financial burnout of iran israel war during recent clashes
+2025-06-24 11:33:49,543 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel clashes economic impact' with depth 'advanced'
+2025-06-24 11:33:54,903 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:33:54,907 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel tensions financial effects October 2023' with depth 'advanced'
+2025-06-24 11:33:59,110 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:39:28,380 - __main__ - INFO - User entered prompt: fetch me out the financial burnout of iran israel war during recent clashes
+2025-06-24 11:39:28,502 - Agents.orchestrator.orchestrator_agent - INFO - Orchestrator (sync) received user input: fetch me out the financial burnout of iran israel war during recent clashes
+2025-06-24 11:39:33,618 - schemas.agent_schema - WARNING - Invalid search_depth 'deep' provided. Defaulting to 'advanced'.
+2025-06-24 11:39:33,619 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran Israel recent clashes financial implications' with depth 'advanced'
+2025-06-24 11:39:37,939 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:39:37,953 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel conflict financial impact recent clashes' with depth 'advanced'
+2025-06-24 11:39:41,868 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:39:41,873 - schemas.agent_schema - INFO - Performing Tavily search for query: 'economic effects Iran Israel tensions 2023' with depth 'advanced'
+2025-06-24 11:39:44,196 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:39:44,198 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran Israel conflict impact on global markets' with depth 'advanced'
+2025-06-24 11:39:47,733 - schemas.agent_schema - INFO - Tavily search successful, found 4 sources.
+2025-06-24 11:39:47,735 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran Israel clashes financial impact 2023' with depth 'advanced'
+2025-06-24 11:39:50,458 - schemas.agent_schema - INFO - Tavily search successful, found 3 sources.
+2025-06-24 11:39:50,458 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Israel Iran conflict economic consequences' with depth 'advanced'
+2025-06-24 11:39:52,980 - schemas.agent_schema - INFO - Tavily search successful, found 3 sources.
+2025-06-24 11:42:23,090 - __main__ - INFO - User entered prompt: fetch me out the financial burnout of iran-israel war during recent clashes
+2025-06-24 11:42:23,214 - Agents.orchestrator.orchestrator_agent - INFO - Orchestrator (sync) received user input: fetch me out the financial burnout of iran-israel war during recent clashes
+2025-06-24 11:42:27,827 - schemas.agent_schema - WARNING - Invalid search_depth 'deep' provided. Defaulting to 'advanced'.
+2025-06-24 11:42:27,827 - schemas.agent_schema - INFO - Performing Tavily search for query: 'financial impact of Iran-Israel recent clashes October 2023' with depth 'advanced'
+2025-06-24 11:42:33,336 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:42:33,344 - schemas.agent_schema - INFO - Performing Tavily search for query: 'economic and financial consequences of Iran-Israel conflict' with depth 'advanced'
+2025-06-24 11:42:36,194 - schemas.agent_schema - INFO - Tavily search successful, found 6 sources.
+2025-06-24 11:45:00,002 - __main__ - INFO - User entered prompt: fetch me out the financial burnout of iran-israel war during recent clashes
+2025-06-24 11:45:06,290 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel clashes financial market reactions October 2023' with depth 'advanced'
+2025-06-24 11:45:10,495 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:45:10,526 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Investment strategies Iran-Israel conflict October 2023' with depth 'advanced'
+2025-06-24 11:45:15,119 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:45:15,158 - schemas.agent_schema - INFO - Performing Tavily search for query: 'economic outcomes Iran-Israel conflict October 2023' with depth 'advanced'
+2025-06-24 11:45:18,326 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:45:18,589 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel conflict recent escalations economic impact' with depth 'advanced'
+2025-06-24 11:45:23,514 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:45:23,546 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel conflict economic forecasts 2024' with depth 'advanced'
+2025-06-24 11:45:26,348 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.
+2025-06-24 11:45:26,403 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran-Israel conflict geopolitical dynamics international relations 2023' with depth 'advanced'
+2025-06-24 11:45:31,145 - schemas.agent_schema - INFO - Tavily search successful, found 5 sources.

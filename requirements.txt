@@ -1,26 +1,29 @@
 # Core AI & Agent SDKs
-openai>=0.27.0             # Official OpenAI Python client :contentReference[oaicite:0]{index=0}
-openai-agents==0.0.17    # OpenAI Agents SDK :contentReference[oaicite:1]{index=1}
-openai-mcp-agents==0.1.0   # MCP integration for OpenAI Agents :contentReference[oaicite:2]{index=2}
+openai==1.85.0
+openai-agents==0.0.17
 
 # Streamlit frontend
-streamlit>=1.18.1          # Web app framework :contentReference[oaicite:3]{index=3}
+streamlit==1.45.1
+
+# Search Tool
+tavily-python==0.5.0
 
 # Env & config
-python-dotenv>=0.20.0      # Load .env config :contentReference[oaicite:4]{index=4}
-PyYAML>=6.0                # YAML config parsing :contentReference[oaicite:5]{index=5}
+python-dotenv==1.1.0
+PyYAML>=6.0
 
 # HTTP clients & async
-httpx>=0.23.0,<1.0.0       # HTTPX client (required by OpenAI SDK) :contentReference[oaicite:6]{index=6}
-requests>=2.28.0           # Simple HTTP client :contentReference[oaicite:7]{index=7}
-aiohttp>=3.8.1             # Async HTTP for agent tools :contentReference[oaicite:8]{index=8}
+httpx>=0.23.0,<1.0.0
+requests>=2.28.0
+aiohttp>=3.8.1
 
 # Data processing
-pandas>=1.5.0              # Data analysis library :contentReference[oaicite:9]{index=9}
-numpy>=1.23.0              # Numerical computing :contentReference[oaicite:10]{index=10}
+pandas>=1.5.0
+numpy>=1.23.0
 
 # Markdown support
-markdown>=3.4.1            # Convert Markdown to HTML :contentReference[oaicite:11]{index=11}
+markdown>=3.4.1
 
 # Type validation
-pydantic==2.11.3        # V1 branch compatibility for Agents SDK :contentReference[oaicite:12]{index=12}
+pydantic==2.11.3
+pydantic-settings==2.9.1

@@ -1,15 +1,16 @@
-from agents import Agent, OpenAIChatCompletionsModel, WebSearchTool
+from agents import Agent, OpenAIChatCompletionsModel
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 import os
-from schemas import SpecialistOutput
+from schemas import SpecialistOutput, search_web
+
 load_dotenv()
 client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 IR_PROMPT = '''
 You are the International Relations Research Agent. Your expertise is in global affairs, political science, and international security.
 
-When invoked, autonomously use the WebSearch tool to find scholarly articles, policy journals, and news analysis.
+When invoked, autonomously use the search_web tool to find scholarly articles, policy journals, and news analysis.
 
 Your final output MUST be a JSON object that conforms to the `SpecialistOutput` schema:
 {{
@@ -21,8 +22,6 @@ Your final output MUST be a JSON object that conforms to the `SpecialistOutput` 
 }}
 '''
 
-
-tools = [WebSearchTool()]
 agent = Agent(
     name="InternationalRelationsAgent",
     instructions=IR_PROMPT,
@@ -30,6 +29,6 @@ agent = Agent(
         model="gpt-4o",
         openai_client=client
     ),
-    tools=tools,
+    tools=[search_web],
     output_type=SpecialistOutput
 )
