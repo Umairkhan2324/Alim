@@ -1,0 +1,2 @@
+2025-06-24 13:54:32,400 - schemas.agent_schema - INFO - Performing Tavily search for query: 'Iran Israel conflict updates' with depth 'advanced'
+2025-06-24 13:54:37,873 - schemas.agent_schema - INFO - Tavily search successful, found 1 sources.

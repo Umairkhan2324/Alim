@@ -7,9 +7,8 @@ import sys
 
 # Explicitly add the project root to sys.path for Streamlit Cloud deployment
 # This ensures that modules like 'Agents' and 'schemas' are discoverable.
-project_root = os.path.abspath(os.path.dirname(__file__))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
+# Using the proven pattern from working Streamlit apps
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Attempt to import orchestrator agent
 try:
@@ -18,10 +17,10 @@ except ModuleNotFoundError as e:
     # Diagnostic output to Streamlit Cloud logs
     print("ImportError encountered: ", e)
     print("sys.path =", sys.path)
-    print("Project root contents:", os.listdir(project_root))
+    print("Current directory contents:", os.listdir(os.path.dirname(__file__)))
     # Fallback: dynamic import by file path (works regardless of package resolution)
     import importlib.util, pathlib
-    orchestrator_path = pathlib.Path(project_root) / "Agents" / "orchestrator" / "orchestrator_agent.py"
+    orchestrator_path = pathlib.Path(os.path.dirname(__file__)) / "Agents" / "orchestrator" / "orchestrator_agent.py"
     if orchestrator_path.exists():
         spec = importlib.util.spec_from_file_location("Agents.orchestrator.orchestrator_agent", orchestrator_path)
         module = importlib.util.module_from_spec(spec)
