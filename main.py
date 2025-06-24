@@ -11,8 +11,27 @@ project_root = os.path.abspath(os.path.dirname(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# Import the orchestrator
-from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
+# Attempt to import orchestrator agent
+try:
+    from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
+except ModuleNotFoundError as e:
+    # Diagnostic output to Streamlit Cloud logs
+    print("ImportError encountered: ", e)
+    print("sys.path =", sys.path)
+    print("Project root contents:", os.listdir(project_root))
+    # Fallback: dynamic import by file path (works regardless of package resolution)
+    import importlib.util, pathlib
+    orchestrator_path = pathlib.Path(project_root) / "Agents" / "orchestrator" / "orchestrator_agent.py"
+    if orchestrator_path.exists():
+        spec = importlib.util.spec_from_file_location("Agents.orchestrator.orchestrator_agent", orchestrator_path)
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[spec.name] = module
+        spec.loader.exec_module(module)
+        run_orchestrator_sync = module.run_orchestrator_sync
+        orchestrator = module.orchestrator
+    else:
+        raise
+
 from schemas.agent_schema import ResearchReport
 
 # Apply nest_asyncio
