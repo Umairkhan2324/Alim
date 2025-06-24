@@ -6,14 +6,23 @@ import os
 import sys
 
 # Fix the path to include the directory where this script is located
-# This ensures that modules like 'Agents' and 'schemas' are discoverable.
-script_dir = os.path.dirname(os.path.abspath(__file__))
-if script_dir not in sys.path:
-    sys.path.insert(0, script_dir)
+# Handle Streamlit Cloud's specific deployment structure
+script_dir = os.path.dirname(os.path.abspath(__file__)) if __file__ else os.getcwd()
+
+# For Streamlit Cloud, ensure we have the correct path to find Agents
+if '/mount/src' in sys.path[0]:  # We're on Streamlit Cloud
+    alim_path = '/mount/src/alim'
+    if alim_path not in sys.path:
+        sys.path.insert(0, alim_path)
+        print(f"Added {alim_path} to sys.path for Streamlit Cloud")
+else:  # Local development
+    if script_dir not in sys.path:
+        sys.path.insert(0, script_dir)
 
 # Attempt to import orchestrator agent
 try:
     from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
+    print("Successfully imported orchestrator agent")
 except ModuleNotFoundError as e:
     # Diagnostic output to Streamlit Cloud logs
     print("ImportError encountered: ", e)
@@ -21,9 +30,18 @@ except ModuleNotFoundError as e:
     print("Script directory:", script_dir)
     if script_dir and os.path.exists(script_dir):
         print("Script directory contents:", os.listdir(script_dir))
-    # Fallback: dynamic import by file path (works regardless of package resolution)
+    
+    # Check if we're on Streamlit Cloud and list the alim directory
+    alim_path = '/mount/src/alim'
+    if os.path.exists(alim_path):
+        print(f"Contents of {alim_path}:", os.listdir(alim_path))
+        agents_path = os.path.join(alim_path, 'Agents')
+        if os.path.exists(agents_path):
+            print(f"Contents of {agents_path}:", os.listdir(agents_path))
+    
+    # Fallback: dynamic import by file path
     import importlib.util, pathlib
-    orchestrator_path = pathlib.Path(script_dir) / "Agents" / "orchestrator" / "orchestrator_agent.py"
+    orchestrator_path = pathlib.Path(alim_path) / "Agents" / "orchestrator" / "orchestrator_agent.py"
     print("Looking for orchestrator at:", orchestrator_path)
     if orchestrator_path.exists():
         spec = importlib.util.spec_from_file_location("Agents.orchestrator.orchestrator_agent", orchestrator_path)
