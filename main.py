@@ -5,19 +5,20 @@ import json
 import os
 import sys
 
-# Fix the path to include the directory where this script is located
-# Handle Streamlit Cloud's specific deployment structure
-script_dir = os.path.dirname(os.path.abspath(__file__)) if __file__ else os.getcwd()
-
-# For Streamlit Cloud, ensure we have the correct path to find Agents
-if '/mount/src' in sys.path[0]:  # We're on Streamlit Cloud
-    alim_path = '/mount/src/alim'
+# Robust path detection for Streamlit Cloud
+# Check if we're on Streamlit Cloud and add the correct path
+alim_path = '/mount/src/alim'
+if os.path.exists(alim_path):
+    # We're on Streamlit Cloud
     if alim_path not in sys.path:
         sys.path.insert(0, alim_path)
         print(f"Added {alim_path} to sys.path for Streamlit Cloud")
-else:  # Local development
-    if script_dir not in sys.path:
-        sys.path.insert(0, script_dir)
+else:
+    # Local development - use current directory
+    current_dir = os.path.dirname(os.path.abspath(__file__)) if __file__ else os.getcwd()
+    if current_dir and current_dir not in sys.path:
+        sys.path.insert(0, current_dir)
+        print(f"Added {current_dir} to sys.path for local development")
 
 # Attempt to import orchestrator agent
 try:
@@ -25,35 +26,36 @@ try:
     print("Successfully imported orchestrator agent")
 except ModuleNotFoundError as e:
     # Diagnostic output to Streamlit Cloud logs
-    print("ImportError encountered: ", e)
+    print("ImportError encountered:", e)
     print("sys.path =", sys.path)
-    print("Script directory:", script_dir)
-    if script_dir and os.path.exists(script_dir):
-        print("Script directory contents:", os.listdir(script_dir))
     
-    # Check if we're on Streamlit Cloud and list the alim directory
-    alim_path = '/mount/src/alim'
-    if os.path.exists(alim_path):
-        print(f"Contents of {alim_path}:", os.listdir(alim_path))
-        agents_path = os.path.join(alim_path, 'Agents')
+    # Check what directories exist
+    if os.path.exists('/mount/src/alim'):
+        print("Contents of /mount/src/alim:", os.listdir('/mount/src/alim'))
+        agents_path = '/mount/src/alim/Agents'
         if os.path.exists(agents_path):
-            print(f"Contents of {agents_path}:", os.listdir(agents_path))
+            print("Contents of Agents directory:", os.listdir(agents_path))
+            orchestrator_path = '/mount/src/alim/Agents/orchestrator'
+            if os.path.exists(orchestrator_path):
+                print("Contents of orchestrator directory:", os.listdir(orchestrator_path))
     
     # Fallback: dynamic import by file path
-    import importlib.util, pathlib
-    orchestrator_path = pathlib.Path(alim_path) / "Agents" / "orchestrator" / "orchestrator_agent.py"
-    print("Looking for orchestrator at:", orchestrator_path)
-    if orchestrator_path.exists():
-        spec = importlib.util.spec_from_file_location("Agents.orchestrator.orchestrator_agent", orchestrator_path)
+    import importlib.util
+    orchestrator_file = '/mount/src/alim/Agents/orchestrator/orchestrator_agent.py'
+    print("Looking for orchestrator at:", orchestrator_file)
+    
+    if os.path.exists(orchestrator_file):
+        print("Orchestrator file found! Loading dynamically...")
+        spec = importlib.util.spec_from_file_location("orchestrator_agent", orchestrator_file)
         module = importlib.util.module_from_spec(spec)
-        sys.modules[spec.name] = module
+        sys.modules["orchestrator_agent"] = module
         spec.loader.exec_module(module)
         run_orchestrator_sync = module.run_orchestrator_sync
         orchestrator = module.orchestrator
         print("Successfully loaded orchestrator via fallback method")
     else:
         print("Orchestrator file not found at expected path")
-        raise
+        raise Exception("Could not load orchestrator agent")
 
 from schemas.agent_schema import ResearchReport
 
@@ -61,7 +63,7 @@ from schemas.agent_schema import ResearchReport
 nest_asyncio.apply()
 
 # Streamlit config
-st.set_page_config(page_title="Alim - Research Assistant", layout="wide", page_icon="??")
+st.set_page_config(page_title="Alim - Research Assistant", layout="wide", page_icon="📚")
 st.title("Alim - Your Research Assistant")
 
 # Initialize chat history
