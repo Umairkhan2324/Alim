@@ -30,3 +30,6 @@ pydantic-settings==2.9.1
 
 # Async utilities
 nest-asyncio==1.6.0
+
+# Install local project packages
+-e .
