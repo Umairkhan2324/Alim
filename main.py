@@ -5,10 +5,11 @@ import json
 import os
 import sys
 
-# Explicitly add the project root to sys.path for Streamlit Cloud deployment
+# Fix the path to include the directory where this script is located
 # This ensures that modules like 'Agents' and 'schemas' are discoverable.
-# Using the proven pattern from working Streamlit apps
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+script_dir = os.path.dirname(os.path.abspath(__file__))
+if script_dir not in sys.path:
+    sys.path.insert(0, script_dir)
 
 # Attempt to import orchestrator agent
 try:
@@ -17,10 +18,13 @@ except ModuleNotFoundError as e:
     # Diagnostic output to Streamlit Cloud logs
     print("ImportError encountered: ", e)
     print("sys.path =", sys.path)
-    print("Current directory contents:", os.listdir(os.path.dirname(__file__)))
+    print("Script directory:", script_dir)
+    if script_dir and os.path.exists(script_dir):
+        print("Script directory contents:", os.listdir(script_dir))
     # Fallback: dynamic import by file path (works regardless of package resolution)
     import importlib.util, pathlib
-    orchestrator_path = pathlib.Path(os.path.dirname(__file__)) / "Agents" / "orchestrator" / "orchestrator_agent.py"
+    orchestrator_path = pathlib.Path(script_dir) / "Agents" / "orchestrator" / "orchestrator_agent.py"
+    print("Looking for orchestrator at:", orchestrator_path)
     if orchestrator_path.exists():
         spec = importlib.util.spec_from_file_location("Agents.orchestrator.orchestrator_agent", orchestrator_path)
         module = importlib.util.module_from_spec(spec)
@@ -28,7 +32,9 @@ except ModuleNotFoundError as e:
         spec.loader.exec_module(module)
         run_orchestrator_sync = module.run_orchestrator_sync
         orchestrator = module.orchestrator
+        print("Successfully loaded orchestrator via fallback method")
     else:
+        print("Orchestrator file not found at expected path")
         raise
 
 from schemas.agent_schema import ResearchReport
