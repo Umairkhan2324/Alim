@@ -5,58 +5,28 @@ import json
 import os
 import sys
 
-# Robust path detection for Streamlit Cloud
-# Check if we're on Streamlit Cloud and add the correct path
-alim_path = '/mount/src/alim'
-if os.path.exists(alim_path):
-    # We're on Streamlit Cloud
-    if alim_path not in sys.path:
-        sys.path.insert(0, alim_path)
-        print(f"Added {alim_path} to sys.path for Streamlit Cloud")
+# --- Official Streamlit Path Fix ---
+# Based on Streamlit's documentation and community best practices, this is the
+# standard way to handle imports in a multi-file app deployed on the cloud.
+
+# Check if we're on Streamlit Cloud. The path '/mount/src/alim' is specific to
+# how Streamlit Cloud mounts the GitHub repository.
+STREAMLIT_CLOUD_ROOT = '/mount/src/alim'
+
+if os.path.exists(STREAMLIT_CLOUD_ROOT):
+    # If we are on Streamlit Cloud, add its root to the path
+    if STREAMLIT_CLOUD_ROOT not in sys.path:
+        sys.path.insert(0, STREAMLIT_CLOUD_ROOT)
+        print(f"Running on Streamlit Cloud. Added '{STREAMLIT_CLOUD_ROOT}' to sys.path.")
 else:
-    # Local development - use current directory
-    current_dir = os.path.dirname(os.path.abspath(__file__)) if __file__ else os.getcwd()
-    if current_dir and current_dir not in sys.path:
-        sys.path.insert(0, current_dir)
-        print(f"Added {current_dir} to sys.path for local development")
+    # If running locally, add the project's local root directory to the path
+    LOCAL_PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+    if LOCAL_PROJECT_ROOT not in sys.path:
+        sys.path.insert(0, LOCAL_PROJECT_ROOT)
+        print(f"Running locally. Added '{LOCAL_PROJECT_ROOT}' to sys.path.")
 
-# Attempt to import orchestrator agent
-try:
-    from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
-    print("Successfully imported orchestrator agent")
-except ModuleNotFoundError as e:
-    # Diagnostic output to Streamlit Cloud logs
-    print("ImportError encountered:", e)
-    print("sys.path =", sys.path)
-    
-    # Check what directories exist
-    if os.path.exists('/mount/src/alim'):
-        print("Contents of /mount/src/alim:", os.listdir('/mount/src/alim'))
-        agents_path = '/mount/src/alim/Agents'
-        if os.path.exists(agents_path):
-            print("Contents of Agents directory:", os.listdir(agents_path))
-            orchestrator_path = '/mount/src/alim/Agents/orchestrator'
-            if os.path.exists(orchestrator_path):
-                print("Contents of orchestrator directory:", os.listdir(orchestrator_path))
-    
-    # Fallback: dynamic import by file path
-    import importlib.util
-    orchestrator_file = '/mount/src/alim/Agents/orchestrator/orchestrator_agent.py'
-    print("Looking for orchestrator at:", orchestrator_file)
-    
-    if os.path.exists(orchestrator_file):
-        print("Orchestrator file found! Loading dynamically...")
-        spec = importlib.util.spec_from_file_location("orchestrator_agent", orchestrator_file)
-        module = importlib.util.module_from_spec(spec)
-        sys.modules["orchestrator_agent"] = module
-        spec.loader.exec_module(module)
-        run_orchestrator_sync = module.run_orchestrator_sync
-        orchestrator = module.orchestrator
-        print("Successfully loaded orchestrator via fallback method")
-    else:
-        print("Orchestrator file not found at expected path")
-        raise Exception("Could not load orchestrator agent")
-
+# With the correct path set, this import should now work universally.
+from Agents.orchestrator.orchestrator_agent import run_orchestrator_sync, orchestrator
 from schemas.agent_schema import ResearchReport
 
 # Apply nest_asyncio
@@ -78,10 +48,14 @@ for message in st.session_state.messages:
 # Chat input
 if prompt := st.chat_input("What would you like to research?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
+    st.rerun()
 
+# If the last message is from the user, generate and display a new response
+if st.session_state.messages and st.session_state.messages[-1]["role"] == "user":
+    user_prompt = st.session_state.messages[-1]["content"]
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response = run_orchestrator_sync(orchestrator, prompt)
+            response = run_orchestrator_sync(orchestrator, user_prompt)
             st.session_state.messages.append({"role": "assistant", "content": response})
-            st.markdown(response)
-    st.rerun()
+            # Rerun to display the new message immediately
+            st.rerun()
